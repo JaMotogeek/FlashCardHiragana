@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.flashcard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.flashcard {
+  width: 300px;
+  height: 350px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  perspective: 1000px;
+}
+
+.flashcard-inner {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  transition: transform 0.5s ease;
+
+  transform-style: preserve-3d;
+}
+
+.flashcard-flipped {
+  transform: rotateY(180deg);
+}
+
+.flashcard-face {
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: #ffffff;
+
+  border: 4px solid #fb9bbc;
+  border-radius: 24px;
+
+  color: #000000;
+  font-size: 120px;
+
+  box-shadow: 8px 8px 0 #e6e6e6;
+
+  backface-visibility: hidden;
+}
+
+.flashcard-back {
+  transform: rotateY(180deg);
+}
+
+.next-button {
+  padding: 12px 32px;
+
+  background-color: #fb9bbc;
+
+  border: 2px solid #000000;
+  border-radius: 12px;
+
+  color: #000000;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  box-shadow: 4px 4px 0 #e6e6e6;
+
+  cursor: pointer;
+
+  transition: transform 0.2s ease;
+}
+
+.next-button:hover {
+  transform: translateY(-4px);
+}
+
+.next-button:active {
+  transform: translateY(0);
+}
