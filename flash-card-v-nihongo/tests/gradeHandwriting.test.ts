@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-
+import { createStrokeCapture } from "../lib/strokeCapture";
 import { gradeHandwriting } from "../lib/gradeHandwriting";
 
 const referenceStrokes = [
@@ -40,4 +40,38 @@ describe("gradeHandwriting", () => {
       strokeNumber: 2,
     });
   });
+  it("accepts the same stroke with extra points recorded near its start", () => {
+  const reference = [[{ x: 0.2, y: 0.2 }, { x: 0.8, y: 0.8 }]];
+
+  const attempt = [[
+    { x: 0.2, y: 0.2 },
+    { x: 0.21, y: 0.21 },
+    { x: 0.22, y: 0.22 },
+    { x: 0.24, y: 0.24 },
+    { x: 0.8, y: 0.8 },
+  ]];
+
+  expect(gradeHandwriting(attempt, reference)).toEqual({ correct: true });
+});
+it("grades strokes captured from an offset drawing pad", () => {
+  const bounds = { left: 100, top: 50, width: 200, height: 200 };
+  const capture = createStrokeCapture(bounds);
+
+  function toViewportPoint(point: { x: number; y: number }) {
+    return {
+      x: bounds.left + point.x * bounds.width,
+      y: bounds.top + point.y * bounds.height,
+    };
+  }
+
+  for (const [start, middle, end] of referenceStrokes) {
+    capture.start(toViewportPoint(start));
+    capture.move(toViewportPoint(middle));
+    capture.end(toViewportPoint(end));
+  }
+
+  expect(gradeHandwriting(capture.getStrokes(), referenceStrokes)).toEqual({
+    correct: true,
+  });
+});
 });
