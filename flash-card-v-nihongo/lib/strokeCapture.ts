@@ -42,6 +42,15 @@ export function createStrokeCapture(bounds: PadBounds) {
       activeStroke = null;
     },
 
+    undo() {
+      completedStrokes.pop();
+    },
+
+    clear() {
+      activeStroke = null;
+      completedStrokes.length = 0;
+    },
+
     getStrokes() {
       return completedStrokes.map((stroke) =>
         stroke.map((point) => ({ ...point })),

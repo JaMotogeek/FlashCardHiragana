@@ -73,12 +73,15 @@ export default function WritingPad({
   }
 
   function check() {
-    const result = gradeHandwriting(capture.getStrokes(), reference);
+    const capturedStrokes = capture.getStrokes();
+    const result = gradeHandwriting(capturedStrokes, reference);
 
     if (result.correct) {
       setFeedback("Correct!");
     } else if (result.reason === "stroke-count") {
-      setFeedback(`This prompt needs ${reference.length} stroke(s).`);
+      setFeedback(
+    `Expected ${reference.length} strokes. Recorded ${capturedStrokes.length}.`,
+    );
     } else {
       const message = {
         "stroke-order": "Check the order",
@@ -89,6 +92,18 @@ export default function WritingPad({
       setFeedback(`Stroke ${result.strokeNumber}. ${message}.`);
     }
   }
+
+  function undo() {
+    capture.undo();
+    setStrokes(capture.getStrokes());
+    setFeedback("");
+    }
+
+    function clear() {
+    capture.clear();
+    setStrokes([]);
+    setFeedback("");
+    }
 
   return (
     <section aria-label="Handwriting practice">
@@ -103,19 +118,39 @@ export default function WritingPad({
         onLostPointerCapture={cancel}
       >
         {showGuide && (
-          <g aria-hidden="true" pointerEvents="none">
-            <line
-              x1="20"
-              y1="50"
-              x2="80"
-              y2="50"
-              stroke="#94a3b8"
-              strokeWidth="1"
-              strokeDasharray="3 3"
+        <g aria-hidden="true" pointerEvents="none">
+            {reference.map((stroke, index) => (
+            <polyline
+                key={index}
+                points={stroke.map(({ x, y }) => `${x * 100},${y * 100}`).join(" ")}
+                fill="none"
+                stroke="#94a3b8"
+                strokeWidth="1"
+                strokeDasharray="3 3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
             />
-            <circle cx="20" cy="50" r="2.5" fill="#2563eb" />
-            <circle cx="80" cy="50" r="2.5" fill="#64748b" />
-          </g>
+            ))}
+            {reference.map((stroke, index) => {
+            const start = stroke[0];
+            if (!start) return null;
+
+            return (
+                <g key={index} transform={`translate(${start.x * 100} ${start.y * 100})`}>
+                <circle r="3.4" fill="#2563eb" stroke="white" strokeWidth="0.6" />
+                <text
+                    fill="white"
+                    fontSize="4.5"
+                    fontWeight="700"
+                    textAnchor="middle"
+                    dominantBaseline="central"
+                >
+                    {index + 1}
+                </text>
+                </g>
+            );
+            })}
+        </g>
         )}
 
         {[...strokes, draft].map((stroke, index) => (
@@ -131,14 +166,35 @@ export default function WritingPad({
         ))}
       </svg>
 
-      <button
-        type="button"
-        onClick={check}
-        disabled={strokes.length === 0 || draft.length > 0}
-      >
-        Check
-      </button>
-      <p role="status">{feedback}</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+        <button
+            type="button"
+            onClick={check}
+            disabled={strokes.length === 0 || draft.length > 0}
+            className="rounded border border-current px-3 py-2 disabled:opacity-40"
+        >
+            Check
+        </button>
+
+        <button
+            type="button"
+            onClick={undo}
+            disabled={strokes.length === 0 || draft.length > 0}
+            className="rounded border border-current px-3 py-2 disabled:opacity-40"
+        >
+            Undo
+        </button>
+
+        <button
+            type="button"
+            onClick={clear}
+            disabled={strokes.length === 0 || draft.length > 0}
+            className="rounded border border-current px-3 py-2 disabled:opacity-40"
+        >
+            Clear
+        </button>
+        </div>
+        <p role="status" className="mt-2">{feedback}</p>
     </section>
   );
 }

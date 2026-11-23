@@ -73,4 +73,25 @@ it("discards an interrupted stroke and keeps completed strokes", () => {
     ],
   ]);
 });
+it("undoes the last completed stroke and clears the attempt", () => {
+  const capture = createStrokeCapture({
+    left: 0,
+    top: 0,
+    width: 100,
+    height: 100,
+  });
+
+  capture.start({ x: 10, y: 20 });
+  capture.end({ x: 40, y: 20 });
+  const firstStroke = capture.getStrokes();
+
+  capture.start({ x: 60, y: 30 });
+  capture.end({ x: 60, y: 60 });
+
+  capture.undo();
+  expect(capture.getStrokes()).toEqual(firstStroke);
+
+  capture.clear();
+  expect(capture.getStrokes()).toEqual([]);
+});
 });

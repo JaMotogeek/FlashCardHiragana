@@ -1,0 +1,50 @@
+import { describe, expect, it } from "vitest";
+import { kanaReferences, getKanaReference } from "../lib/kanaReferences";
+import { gradeHandwriting } from "../lib/gradeHandwriting";
+
+describe("kana references", () => {
+  it.each(Object.entries(kanaReferences))(
+    "%s has usable strokes within the drawing pad",
+    (_kana, strokes) => {
+      expect(strokes.length).toBeGreaterThan(0);
+
+      for (const stroke of strokes) {
+        const start = stroke[0];
+        if (!start) throw new Error("Reference stroke is empty");
+
+        expect(
+          stroke.some(({ x, y }) => x !== start.x || y !== start.y),
+        ).toBe(true);
+
+        for (const { x, y } of stroke) {
+          for (const coordinate of [x, y]) {
+            expect(Number.isFinite(coordinate)).toBe(true);
+            expect(coordinate).toBeGreaterThanOrEqual(0);
+            expect(coordinate).toBeLessThanOrEqual(1);
+          }
+        }
+      }
+    },
+  );
+  it("rejects か when its first two reference strokes are swapped", () => {
+  const [first, second, third] = kanaReferences.か;
+
+  expect(
+    gradeHandwriting([second!, first!, third!], kanaReferences.か),
+  ).toEqual({
+    correct: false,
+    reason: "stroke-order",
+    strokeNumber: 1,
+  });
+});
+it.each(["か", "く"] as const)(
+  "returns the writing reference for %s",
+  (kana) => {
+    expect(getKanaReference(kana)).toBe(kanaReferences[kana]);
+  },
+);
+
+it("returns undefined for a flashcard without stroke data", () => {
+  expect(getKanaReference("あ")).toBeUndefined();
+});
+});
