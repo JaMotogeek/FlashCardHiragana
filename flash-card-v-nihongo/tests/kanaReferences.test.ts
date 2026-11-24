@@ -44,7 +44,17 @@ it.each(["か", "く"] as const)(
   },
 );
 
-it("returns undefined for a flashcard without stroke data", () => {
-  expect(getKanaReference("あ")).toBeUndefined();
+it.each(["あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ"] as const)(
+  "returns a writing reference for %s",
+  (kana) => {
+    const reference = getKanaReference(kana);
+
+    expect(reference).toBeDefined();
+    expect(reference?.length).toBeGreaterThan(0);
+  },
+);
+
+it("returns undefined for a kana without stroke data", () => {
+  expect(getKanaReference("た")).toBeUndefined();
 });
 });

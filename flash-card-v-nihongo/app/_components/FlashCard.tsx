@@ -17,7 +17,16 @@ const cards: Card[] = [
   { front: "え", back: "e" },
   { front: "お", back: "o" },
   { front: "か", back: "ka" },
+  { front: "き", back: "ki" },
   { front: "く", back: "ku" },
+  { front: "け", back: "ke" },
+  { front: "こ", back: "ko" },
+  { front: "さ", back: "sa" },
+  { front: "し", back: "shi" },
+  { front: "す", back: "su" },
+  { front: "せ", back: "se" },
+  { front: "そ", back: "so" },
+  
 ];
 
 function shuffleDeck(deck: Card[]) {
