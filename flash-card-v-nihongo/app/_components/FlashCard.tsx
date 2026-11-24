@@ -26,7 +26,16 @@ const cards: Card[] = [
   { front: "す", back: "su" },
   { front: "せ", back: "se" },
   { front: "そ", back: "so" },
-  
+  { front: "た", back: "ta" },
+  { front: "ち", back: "chi" },
+  { front: "つ", back: "tsu" },
+  { front: "て", back: "te" },
+  { front: "と", back: "to" },
+  { front: "な", back: "na" },
+  { front: "に", back: "ni" },
+  { front: "ぬ", back: "nu" },
+  { front: "ね", back: "ne" },
+  { front: "の", back: "no" },
 ];
 
 function shuffleDeck(deck: Card[]) {

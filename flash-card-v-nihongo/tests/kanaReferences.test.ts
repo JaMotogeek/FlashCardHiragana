@@ -44,7 +44,7 @@ it.each(["か", "く"] as const)(
   },
 );
 
-it.each(["あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ"] as const)(
+it.each(["あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "さ", "し", "す", "せ", "そ", "た", "ち", "つ", "て", "と", "な", "に", "ぬ", "ね", "の"] as const)(
   "returns a writing reference for %s",
   (kana) => {
     const reference = getKanaReference(kana);
@@ -53,8 +53,7 @@ it.each(["あ", "い", "う", "え", "お", "か", "き", "く", "け", "こ", "
     expect(reference?.length).toBeGreaterThan(0);
   },
 );
-
-it("returns undefined for a kana without stroke data", () => {
-  expect(getKanaReference("た")).toBeUndefined();
+it("returns undefined for an unsupported character", () => {
+  expect(getKanaReference("A")).toBeUndefined();
 });
 });
